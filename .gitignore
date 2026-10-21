@@ -12,3 +12,5 @@ attachments
 *.log
 .env
 .env.*
+
+.wrangler

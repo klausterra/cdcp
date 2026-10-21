@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { drawRound, QUESTIONS, ROUND_SIZE, type Question } from "@/data/questions";
+import { cdcpAnalytics } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -24,6 +25,7 @@ function Home() {
     setDeck(drawRound());
     const raw = localStorage.getItem(BEST_KEY);
     if (raw) setBest(Number(raw));
+    cdcpAnalytics.roundStart("prova");
   }, []);
 
   const current = deck[index];
@@ -40,8 +42,10 @@ function Home() {
     const all = [...attempts, { question: current, picked }];
     setAttempts(all);
     if (index + 1 >= deck.length) {
+      const correct = all.filter((item) => item.picked === item.question.a).length;
+      const pct = Math.round((correct / deck.length) * 100);
+      cdcpAnalytics.roundComplete(mode, pct);
       if (mode === "prova") {
-        const pct = Math.round((score / deck.length) * 100);
         setBest((prev) => {
           const nextBest = prev === null ? pct : Math.max(prev, pct);
           localStorage.setItem(BEST_KEY, String(nextBest));
@@ -56,6 +60,8 @@ function Home() {
   }
 
   function restart(nextMode = mode) {
+    if (nextMode !== mode) cdcpAnalytics.modeSwitch(nextMode);
+    cdcpAnalytics.roundStart(nextMode);
     setMode(nextMode);
     setDeck(drawRound());
     setIndex(0);
@@ -242,6 +248,7 @@ function Promo({ compact = false }: { compact?: boolean }) {
             href="https://instagram.com/klausterra"
             target="_blank"
             rel="noreferrer"
+            onClick={() => cdcpAnalytics.socialClick("instagram")}
             className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-ink"
           >
             @klausterra
@@ -250,6 +257,7 @@ function Promo({ compact = false }: { compact?: boolean }) {
             href="https://www.linkedin.com/in/klausterra/"
             target="_blank"
             rel="noreferrer"
+            onClick={() => cdcpAnalytics.socialClick("linkedin")}
             className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-sm font-medium text-fg"
           >
             LinkedIn
@@ -273,6 +281,7 @@ function Promo({ compact = false }: { compact?: boolean }) {
             href={project.href}
             target="_blank"
             rel="noreferrer"
+            onClick={() => cdcpAnalytics.promoClick(project.name)}
             className="rounded-xl border border-line bg-bg-2 p-4 hover:border-primary"
           >
             <p className="font-semibold text-fg">{project.name}</p>

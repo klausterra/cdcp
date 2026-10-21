@@ -106,4 +106,18 @@ describe("helpers Matomo", () => {
       ["trackEvent", "cta", "social_click", "instagram"],
     ]);
   });
+
+  it("rastreia o funil do popup PWA", () => {
+    const win = installWindow();
+    cdcpAnalytics.pwaPromptShown("native");
+    cdcpAnalytics.pwaInstallClick("native");
+    cdcpAnalytics.pwaDismiss("ios");
+    cdcpAnalytics.pwaInstalled();
+    assert.deepEqual(win._paq, [
+      ["trackEvent", "pwa", "prompt_shown", "native"],
+      ["trackEvent", "pwa", "install_click", "native"],
+      ["trackEvent", "pwa", "dismiss", "ios"],
+      ["trackEvent", "pwa", "installed"],
+    ]);
+  });
 });

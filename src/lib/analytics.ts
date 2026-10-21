@@ -114,4 +114,8 @@ export const cdcpAnalytics = {
   modeSwitch: (mode: string) => trackEvent("treino", "mode_switch", mode),
   promoClick: (project: string) => trackEvent("cta", "promo_click", project),
   socialClick: (network: string) => trackEvent("cta", "social_click", network),
+  pwaPromptShown: (kind: string) => trackEvent("pwa", "prompt_shown", kind),
+  pwaInstallClick: (kind: string) => trackEvent("pwa", "install_click", kind),
+  pwaDismiss: (kind: string) => trackEvent("pwa", "dismiss", kind),
+  pwaInstalled: () => trackEvent("pwa", "installed"),
 };

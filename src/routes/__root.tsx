@@ -2,6 +2,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AuthProvider } from "@/lib/auth/provider";
 import { MatomoTracker } from "@/components/matomo-tracker";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { PwaInstallPopup } from "@/components/pwa-install-popup";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Treino CDCP";
@@ -17,6 +18,8 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "apple-touch-icon", href: "/icons/icon-192.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -39,6 +42,7 @@ export const Route = createRootRoute({
         <AuthProvider>
           <Outlet />
         </AuthProvider>
+        <PwaInstallPopup />
         <Scripts />
       </body>
     </html>
